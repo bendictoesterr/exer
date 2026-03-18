@@ -1,3 +1,6 @@
+import json
+
+
 contatos_suportados = ("telefone", "email", "endereço")
 
 agenda = {
@@ -12,6 +15,27 @@ agenda = {
         "endereco":["Rua 345"]
     }
 }
+
+def agenda_para_txt(nome_arquivo:str, agenda):
+    if "txt" not in nome_arquivo:
+        nome_arquivo = f"{nome_arquivo}.txt"
+    with open(nome_arquivo, "w", encoding="utf-8") as arquivo:
+        arquivo.write(agenda_para_texto(**agenda))
+        print("Agenda exportada com sucesso!")
+
+def json_para_agenda(nome_arquivo:str):
+    with open(nome_arquivo, "r", encoding="utf-8") as arquivo:
+        conteudo = arquivo.read()
+    print("Agenda carregada com sucesso!")
+    return json.loads(conteudo)
+
+def agenda_para_json(nome_arquivo:str, agenda):
+    if ".json" not in nome_arquivo:
+        nome_arquivo = f"{nome_arquivo}.json"
+        with open(nome_arquivo, "w", encoding="utf-8") as arquivo:
+            arquivo.write(json.dumps(agenda, indent=4, ensure_ascii=False))
+            print("Agenda exportada com sucesso!")
+    
 
 def contato_para_texto(nome_contato:str, **formas_contato):
     """Recebe um nome de contato com string e um dicionário
@@ -180,13 +204,16 @@ def exibe_menu():
     print("5 - Exibir um contato")
     print("6 - Exibir toda a agenda")
     print("7 - Excluir um contato")
-    print("8 - Sair")
+    print("8 - Exportar agenda para txt")
+    print("9 - Exportar agenda para JSON")
+    print("10 - Importar agenda de JSON")
+    print("11 - Sair")
     print("\n")
 
 def manipulador_agenda():
     agenda = {}
     op = 1
-    while op != 8:
+    while op != 11:
         exibe_menu()
         op = int(input("Informe a opção desejada: "))
         if op == 1:
@@ -204,7 +231,17 @@ def manipulador_agenda():
         elif op == 7:
             usuario_exclui_contato(agenda)
         elif op == 8:
+            nome_arquivo = input("Informe o nome ou caminho do arquivo: ")
+            agenda_para_txt(nome_arquivo, agenda)
+        elif op == 9:
+            nome_arquivo = input("Informe o nome ou caminho do arquivo: ")
+            agenda_para_json(nome_arquivo, agenda)
+        elif op == 10:
+            nome_arquivo = input("Informe o nome ou caminho do arquivo: ")
+            agenda = json_para_agenda(nome_arquivo)
+        elif op == 11:
             print("Saindo do sistema")
+            break
         else:
             print("Opção inválida! Informe uma opção existente.")
 
